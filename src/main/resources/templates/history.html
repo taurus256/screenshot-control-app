@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Start</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-primary" href="/">ScreenshotMaker</a>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+            <span></span>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+            <span></span>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+            <a href="/task/history">History</a>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser==null}">
+            <a href="/login">Log in</a>
+            <a href="/add_user" th:if="${#httpServletRequest.remoteUser==null}">Create user</a>
+        </div>
+    </div>
+</nav>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>URL</th>
+        <th>Time</th>
+        <th>Resolution</th>
+        <th>Link</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${taskList}">
+        <td th:text="${task.getUrl()}">1</td>
+        <td th:text="${task.getCreateTime()}">1</td>
+        <td th:text="${task.getResolution().name()}">1</td>
+        <td>
+            <a th:href="@{/task/{taskId}(taskId=${task.getId()})}" href="task.html" target="_blank">Go to results</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>

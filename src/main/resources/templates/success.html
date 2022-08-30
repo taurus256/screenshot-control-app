@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Success login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+Start
+<div th:if="${#httpServletRequest.remoteUser!=null}">
+<h4 th:inline="text">You are successfully logged in as [[${#httpServletRequest.remoteUser}]]!</h4>
+</div>
+    <a href="/">Go to the main page</a>
+</body>
+</html>

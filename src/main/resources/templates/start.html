@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Start</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-primary" href="/">ScreenshotMaker</a>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+            <span></span>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+            <span></span>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+            <a href="/task/history">History</a>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
+
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </div>
+        <div class="nav-item" th:if="${#httpServletRequest.remoteUser==null}">
+            <a href="/login">Log in</a>
+            <a href="/add_user" th:if="${#httpServletRequest.remoteUser==null}">Create user</a>
+        </div>
+    </div>
+</nav>
+
+<form method="POST" action="/task" modelAttribute="task">
+    <div class="container-fluid p-2">
+        <h4>Your site name:</h4>
+        <div class="input-group p-2">
+            <span class="input-group-text">http://</span>
+            <input type="text" class="form-control" name="url" placeholder="example.com" aria-label="http://example.com"/>
+        </div>
+        <h4>Resolution:</h4>
+        <select class="form-select" name="resolution" id="resolution" aria-label="Select resolution">
+            <option selected value="_1920x1080">1920×1080</option>
+            <option value="_1280x1024">1280*1024</option>
+            <option value="_1024x768">1024*768</option>
+            <option value="_768x1024">768*1024</option>
+        </select>
+        <div class="row p-2">
+            <div class="col-sm-6 bg-light">
+                <h4>Windows:</h4>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="winEdge" value="true" id="winEdge">
+                    <label class="form-check-label" for="winEdge">Edge</label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winFirefox" id="winFF">
+                    <label class="form-check-label" for="winFF">
+                        Firefox
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winChrome"
+                           id="winChrome">
+                    <label class="form-check-label" for="winChrome">
+                        Chrome
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winOpera"
+                           id="winOpera">
+                    <label class="form-check-label" for="winOpera">
+                        Opera
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-6 bg-light">
+                <h4>Linux:</h4>
+                <div class="form-check  checkbox-inline">
+                    <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="linFirefox" id="linFirefox">
+                    <label class="form-check-label" for="linFirefox">
+                        Firefox
+                    </label>
+                </div>
+
+                <div class="form-check checkbox-inline ">
+                    <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="linChrome"
+                           id="linChrome">
+                    <label class="form-check-label" for="linChrome">
+                        Chrome
+                    </label>
+                </div>
+
+                <div class="form-check  checkbox-inline">
+                    <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="linOpera"
+                           id="linOpera">
+                    <label class="form-check-label" for="linOpera">
+                        Opera
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row p-2">
+            <div class="col-12">
+                <button type="submit" value="Submit" class="btn btn-outline-primary col-12">Start preview</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>
