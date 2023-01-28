@@ -20,7 +20,6 @@ public class StartController {
 
   @GetMapping
   String callStart(Model model){
-    System.out.println("eurekaClient.getApplications( = " + eurekaClient.getApplications());
     Set<String> applicationNames = new HashSet<>();
     for (Application app: eurekaClient.getApplications().getRegisteredApplications()){
       if (!"CONTROL-APP".equals(app.getName())){
