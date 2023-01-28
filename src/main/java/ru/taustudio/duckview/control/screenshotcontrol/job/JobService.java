@@ -1,20 +1,21 @@
 package ru.taustudio.duckview.control.screenshotcontrol.job;
 
+import com.netflix.discovery.EurekaClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScTask;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.BROWSER;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.RENDERER;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.OS;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.Resolution;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
 
 import javax.imageio.stream.FileImageOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,58 +31,67 @@ public class JobService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-//	@Qualifier("eurekaClient")
-//	@Autowired
-//	EurekaClient eurekaClient;
-
 	final String FILE_DIRECTORY = "/tmp/";
 	final String FILE_EXTENSION = ".png";
 
 	public void createJobs(ScTask task) {
 		//for Windows
 		if (task.getWinEdge()) {
-			createJob(BROWSER.EDGE, OS.WINDOWS, task.getUrl(), task);
+			createJob(RENDERER.EDGE, OS.WINDOWS, task.getUrl(), task);
 		}
 		if (task.getWinFirefox()) {
-			createJob(BROWSER.FIREFOX, OS.WINDOWS, task.getUrl(), task);
+			createJob(RENDERER.FIREFOX, OS.WINDOWS, task.getUrl(), task);
 		}
 		if (task.getWinChrome()) {
-			createJob(BROWSER.CHROME, OS.WINDOWS, task.getUrl(), task);
+			createJob(RENDERER.CHROME, OS.WINDOWS, task.getUrl(), task);
 		}
 		if (task.getWinOpera()) {
-			createJob(BROWSER.OPERA, OS.WINDOWS, task.getUrl(), task);
+			createJob(RENDERER.OPERA, OS.WINDOWS, task.getUrl(), task);
 		}
 		//for Linux
 		if (task.getLinFirefox()) {
-			createJob(BROWSER.FIREFOX, OS.LINUX, task.getUrl(), task);
+			createJob(RENDERER.FIREFOX, OS.LINUX, task.getUrl(), task);
 		}
 		if (task.getLinChrome()) {
-			createJob(BROWSER.CHROME, OS.LINUX, task.getUrl(), task);
+			createJob(RENDERER.CHROME, OS.LINUX, task.getUrl(), task);
 		}
 		if (task.getLinOpera()) {
-			createJob(BROWSER.OPERA, OS.LINUX, task.getUrl(), task);
+			createJob(RENDERER.OPERA, OS.LINUX, task.getUrl(), task);
+		}
+		//for iOs
+		if (task.getIosIPHONE_SE()) {
+			createJob(RENDERER.IPHONESE, OS.IOS, task.getUrl(), task);
+		}
+		if (task.getIosIPHONE_PRO()) {
+			createJob(RENDERER.IPHONEPRO, OS.IOS, task.getUrl(), task);
+		}
+		if (task.getIosIPAD()) {
+			createJob(RENDERER.IPAD, OS.IOS, task.getUrl(), task);
+		}
+		if (task.getMacSafari()) {
+			createJob(RENDERER.SAFARI, OS.MACOS, task.getUrl(), task);
 		}
 	}
 
-	public void createJob(BROWSER browser, OS operationSystem, String url, ScTask task) {
+	public void createJob(RENDERER renderer, OS operationSystem, String url, ScTask task) {
 		ScJob job = ScJob.builder()
 				.uuid(UUID.randomUUID().toString())
 				.createTime(Instant.now())
-				.browser(browser)
+				.renderer(renderer)
 				.operationSystem(operationSystem)
 				.url(url)
 				.task(task)
 				.status(TaskStatus.CREATED)
 				.build();
 		jobRepository.save(job);
-		sendToAgent(job.getId(), browser, operationSystem, url, task.getResolution());
+		sendToAgent(job.getId(), renderer, operationSystem, url, task.getResolution());
 	}
 
-	private void sendToAgent(Long jobId, BROWSER browser, OS os, String targetUrl, Resolution res) {
+	private void sendToAgent(Long jobId, RENDERER renderer, OS os, String targetUrl, Resolution res) {
 		try {
 			Boolean isProcessedNow = restTemplate.getForObject("http://AGENT-"
 							+ os.name() + "-"
-							+ browser.name()
+							+ renderer.name()
 							+ "/screenshot?url=" + targetUrl
 							+ "&width=" + res.getWidth()
 							+ "&height=" + res.getHeight()

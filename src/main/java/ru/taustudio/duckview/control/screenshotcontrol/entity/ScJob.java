@@ -1,9 +1,8 @@
 package ru.taustudio.duckview.control.screenshotcontrol.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.BROWSER;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.RENDERER;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.OS;
 import java.io.Serializable;
 import java.time.Instant;
@@ -44,7 +43,7 @@ public class ScJob implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "browser")
-    private BROWSER browser;
+    private RENDERER renderer;
 
     @Column(name = "url")
     private String url;

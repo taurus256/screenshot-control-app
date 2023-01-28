@@ -45,7 +45,7 @@
         <tbody>
         <tr th:each="job : ${task.getJobList()}">
             <td th:text="${job.getId()}">1</td>
-            <td th:text="${job.getBrowser()}">1</td>
+            <td th:text="${job.getRenderer()}">1</td>
             <td th:text="${job.getOperationSystem()}">1</td>
             <td th:text="${job.getStatus().toString()}">John Doe</td>
             <td>
