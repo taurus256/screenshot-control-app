@@ -3,13 +3,9 @@ package ru.taustudio.duckview.control.screenshotcontrol.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.BROWSER;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.OS;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.Resolution;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,6 +32,9 @@ public class ScTask implements Serializable {
         linFirefox = false;
         linChrome = false;
         linOpera = false;
+        iosIPHONE_SE=false;
+        iosIPHONE_PRO = false;
+        iosIPAD = false;
     }
 
     private static final long serialVersionUID = 1L;
@@ -66,6 +65,10 @@ public class ScTask implements Serializable {
     private Boolean linFirefox;
     private Boolean linChrome;
     private Boolean linOpera;
+    private Boolean iosIPAD;
+    private Boolean iosIPHONE_SE;
+    private Boolean iosIPHONE_PRO;
+    private Boolean macSafari;
 
     @OneToMany(mappedBy = "task")
     List<ScJob> jobList;
