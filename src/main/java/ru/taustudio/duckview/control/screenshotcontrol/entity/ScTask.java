@@ -35,6 +35,7 @@ public class ScTask implements Serializable {
         iosIPHONE_SE=false;
         iosIPHONE_PRO = false;
         iosIPAD = false;
+        macSafari = false;
     }
 
     private static final long serialVersionUID = 1L;

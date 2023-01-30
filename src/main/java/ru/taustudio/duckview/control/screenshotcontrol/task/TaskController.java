@@ -36,6 +36,7 @@ public class TaskController {
 		task.setUrl("http://" + task.getUrl());
 		task = taskService.createTask(task);
 		model.addAttribute("task", task);
+		model.addAttribute("applicationNames", taskService.getAppNamesFromContext());
 		return "redirect:/task/" + task.getId();
 	}
 

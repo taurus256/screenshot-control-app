@@ -1,6 +1,11 @@
 package ru.taustudio.duckview.control.screenshotcontrol.task;
 
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Application;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScTask;
@@ -17,6 +22,9 @@ public class TaskService {
 	private TaskRepository taskRepository;
 	@Autowired
 	private JobService jobService;
+	@Qualifier("eurekaClient")
+	@Autowired
+	EurekaClient eurekaClient;
 
 	public ScTask createTask(ScTask task) {
 		ScUser user = (ScUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -37,5 +45,16 @@ public class TaskService {
 		ScUser user = (ScUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (user.getId() == null) return new ArrayList<ScTask>();
 		return taskRepository.findAllByUser(user);
+	}
+
+	public Set<String> getAppNamesFromContext() {
+		Set<String> applicationNames = new HashSet<>();
+		for (
+				Application app : eurekaClient.getApplications().getRegisteredApplications()) {
+			if (!"CONTROL-APP".equals(app.getName())) {
+				applicationNames.add(app.getName());
+			}
+		}
+		return applicationNames;
 	}
 }
