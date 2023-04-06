@@ -1,10 +1,9 @@
 package ru.taustudio.duckview.control.screenshotcontrol.job;
 
-import com.netflix.discovery.EurekaClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -15,12 +14,14 @@ import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.OS;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.Resolution;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
 
-import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.util.UUID;
+import ru.taustudio.duckview.control.screenshotcontrol.misc.FileUtilMethods;
+import ru.taustudio.duckview.control.screenshotcontrol.misc.ImageProcessingService;
+import ru.taustudio.duckview.shared.JobDescription;
 
 @Service
 @Slf4j
@@ -30,6 +31,12 @@ public class JobService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	ImageProcessingService imageProcessingService;
+
+	@Autowired
+	private KafkaTemplate<String, JobDescription> kafkaTemplate;
 
 	final String FILE_DIRECTORY = "/tmp/";
 	final String FILE_EXTENSION = ".png";
@@ -68,8 +75,12 @@ public class JobService {
 		if (task.getIosIPAD()) {
 			createJob(RENDERER.IPAD, OS.IOS, task.getUrl(), task);
 		}
+		// for macOS
 		if (task.getMacSafari()) {
 			createJob(RENDERER.SAFARI, OS.MACOS, task.getUrl(), task);
+		}
+		if (task.getMacFirefox()){
+			createJob(RENDERER.FIREFOX, OS.MACOS, task.getUrl(), task);
 		}
 	}
 
@@ -84,7 +95,7 @@ public class JobService {
 				.status(TaskStatus.CREATED)
 				.build();
 		jobRepository.save(job);
-		sendToAgent(job.getId(), renderer, operationSystem, url, task.getResolution());
+		sendToKafka(job.getId(), renderer, operationSystem, url, task.getResolution());
 	}
 
 	private void sendToAgent(Long jobId, RENDERER renderer, OS os, String targetUrl, Resolution res) {
@@ -107,18 +118,29 @@ public class JobService {
 		}
 	}
 
+	private void sendToKafka(Long jobId, RENDERER renderer, OS os, String targetUrl, Resolution res){
+		JobDescription job = JobDescription.builder()
+				.jobId(jobId)
+				.url(targetUrl)
+				.width(res.getWidth())
+				.height(res.getHeight())
+				.build();
+		kafkaTemplate.send(getTopicName(os, renderer), job);
+	}
+
+	private String getTopicName(OS os, RENDERER renderer){
+		return os.getShortname() + "_" + renderer.name().toLowerCase();
+	}
+
 	public byte[] getJobImageData(Long id) throws IOException {
 		File f = new File(FILE_DIRECTORY + id + FILE_EXTENSION);
 		return Files.readAllBytes(f.toPath());
 	}
 
 	public void saveDataFromAgent(Long jobId, ByteArrayResource resource) throws IOException{
-		String fileName = jobId.toString() + FILE_EXTENSION;
-		File outputFile = new File(FILE_DIRECTORY + fileName);
-
-		try (FileImageOutputStream fio = new FileImageOutputStream(outputFile)) {
-			fio.write(resource.getByteArray());
-		}
+		String fileName = jobId.toString();
+		FileUtilMethods.writeImage(fileName, resource.getByteArray());
+		imageProcessingService.generatePreview(jobId, resource);
 		setJobStatus(jobId, TaskStatus.SUCCESS);
 	}
 

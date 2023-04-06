@@ -40,4 +40,10 @@ public class TaskController {
 		return "redirect:/task/" + task.getId();
 	}
 
+	@GetMapping("/diff")
+	public String generateDiffs(@RequestParam Long taskId, @RequestParam Long sampleJobId){
+		taskService.startDiffGeneration(taskId, sampleJobId);
+		return "redirect:/task/" + taskId;
+	}
+
 }

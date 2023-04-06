@@ -5,5 +5,6 @@ public enum TaskStatus {
 	PENDING,
 	PROCESS,
 	ERROR,
-	SUCCESS
+	SUCCESS,
+	PREVIEW_IS_READY
 }

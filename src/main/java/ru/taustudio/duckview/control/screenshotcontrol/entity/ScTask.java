@@ -36,6 +36,7 @@ public class ScTask implements Serializable {
         iosIPHONE_PRO = false;
         iosIPAD = false;
         macSafari = false;
+        macFirefox = false;
     }
 
     private static final long serialVersionUID = 1L;
@@ -70,6 +71,7 @@ public class ScTask implements Serializable {
     private Boolean iosIPHONE_SE;
     private Boolean iosIPHONE_PRO;
     private Boolean macSafari;
+    private Boolean macFirefox;
 
     @OneToMany(mappedBy = "task")
     List<ScJob> jobList;
