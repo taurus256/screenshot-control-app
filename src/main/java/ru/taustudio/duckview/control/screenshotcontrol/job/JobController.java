@@ -3,7 +3,6 @@ package ru.taustudio.duckview.control.screenshotcontrol.job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,13 +15,18 @@ public class JobController {
 	JobService jobService;
 
 	/**This method called from agents*/
-	@PutMapping("/{jobId}")
-	public void updateJob(@PathVariable Long jobId, @RequestBody ByteArrayResource bars) throws IOException {
-		jobService.saveDataFromAgent(jobId, bars);
+	@PutMapping("/{jobUUID}")
+	public void updateJob(@PathVariable String jobUUID, @RequestBody ByteArrayResource bars) throws IOException {
+		jobService.saveDataFromAgent(jobUUID, bars);
 	}
 
-	@GetMapping(value = "/{jobId}/show", produces = MediaType.IMAGE_PNG_VALUE)
-	public byte[] getJobImage(@PathVariable Long jobId) throws IOException {
-		return jobService.getJobImageData(jobId);
+	@GetMapping(value = "/{jobUUID}/show", produces = MediaType.IMAGE_PNG_VALUE)
+	public byte[] getJobImage(@PathVariable String jobUUID) throws IOException {
+		return jobService.getJobImageData(jobUUID);
+	}
+
+	@GetMapping(value = "/{jobUUID}/preview", produces = MediaType.IMAGE_PNG_VALUE)
+	public byte[] getJobImagePreview(@PathVariable String jobUUID) throws IOException {
+		return jobService.getJobImagePreview(jobUUID);
 	}
 }

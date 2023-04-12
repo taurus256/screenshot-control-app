@@ -7,4 +7,5 @@ import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
 
 @Repository
 public interface JobRepository extends JpaRepository<ScJob, Long> {
+  ScJob getScJobByUuid(String uuid);
 }

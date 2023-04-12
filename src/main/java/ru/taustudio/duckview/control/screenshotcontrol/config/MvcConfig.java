@@ -2,6 +2,7 @@ package ru.taustudio.duckview.control.screenshotcontrol.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,5 +16,10 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/success").setViewName("success");
 		registry.addViewController("/add_user").setViewName("user_edit");
 		registry.addViewController("/task/history").setViewName("history");
+	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry){
+		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
 	}
 }

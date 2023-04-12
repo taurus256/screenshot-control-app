@@ -15,7 +15,7 @@ import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskSt
  * A DVJob.
  */
 @Entity
-@Table(name = "sc_job")
+@Table(name = "sc_job", indexes = @Index(columnList="uuid"))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Data
 @EqualsAndHashCode

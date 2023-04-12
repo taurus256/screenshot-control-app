@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<ScTask, Long> {
 	List<ScTask> findAllByUser(ScUser user);
+	ScTask getScTaskByUuid(String uuid);
 }

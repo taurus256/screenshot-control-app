@@ -4,10 +4,10 @@ package ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration;
  * The OS enumeration.
  */
 public enum OS {
-    MACOS("mac"),
-    LINUX("lin"),
-    WINDOWS("win"),
-    IOS("ios");
+    MACOS("MAC"),
+    LINUX("LIN"),
+    WINDOWS("WIN"),
+    IOS("IOS");
 
     private String shortname;
 

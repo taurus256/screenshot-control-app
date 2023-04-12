@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 public class JobDescription {
 	Long jobId;
+	String jobUUID;
 	String url;
 	Integer width;
 	Integer height;

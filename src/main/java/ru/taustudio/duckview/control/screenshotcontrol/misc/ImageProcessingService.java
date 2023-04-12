@@ -25,13 +25,13 @@ import pazone.ashot.cropper.ImageCropper;
 public class ImageProcessingService {
   ImageCropper cropper = new DefaultCropper();
 
-  public void generatePreview(Long jobId, ByteArrayResource resource)  {
+  public void generatePreview(String jobUUID, ByteArrayResource resource)  {
     BufferedImage image = null;
     try {
       image = ImageIO.read(resource.getInputStream());
     Screenshot cropped = cropper.crop(image, Set.of(new Coords(image.getWidth(), image.getWidth())));
     BufferedImage resized = Scalr.resize(cropped.getImage(),300, Scalr.OP_ANTIALIAS);
-    String fileName = jobId.toString() + ".preview";
+    String fileName = jobUUID + ".preview";
     FileUtilMethods.writeImage(fileName,resized);
     } catch (IOException e) {
       e.printStackTrace();

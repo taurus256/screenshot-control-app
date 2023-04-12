@@ -2,7 +2,9 @@ package ru.taustudio.duckview.control.screenshotcontrol.task;
 
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,8 +47,8 @@ public class TaskService {
     return t;
   }
 
-  public ScTask getTask(Long taskId) {
-    return taskRepository.getReferenceById(taskId);
+  public ScTask getTask(String taskUUID) {
+    return taskRepository.getScTaskByUuid(taskUUID);
   }
 
   public List<ScTask> getTaskForCurrentUser() {
@@ -69,15 +71,22 @@ public class TaskService {
     return applicationNames;
   }
 
-  public void startDiffGeneration(Long taskId, Long jobId) {
-    final String sampleId = taskRepository.getReferenceById(taskId).getJobList().stream()
+  public void startDiffGeneration(String taskUUID, Long jobId) {
+    final String sampleId = taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
         .filter(job -> Objects.equals(
             job.getId(), jobId)).map(job -> job.getId().toString()).findFirst().orElseThrow();
-    final List<String> instances = taskRepository.getReferenceById(taskId).getJobList().stream()
+    final List<String> instances = taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
         .filter(job -> !Objects.equals(
             job.getId(), jobId)).map(job -> job.getId().toString()).collect(Collectors.toList());
     System.out.println("sampleId = " + sampleId);
     System.out.println("instances = " + instances);
     imageProcessingService.generateDiffs(sampleId, instances);
+  }
+
+  public Map<String, Object> getJobDataList(String taskUUID) {
+    Map<String, Object> result = new HashMap<>();
+    taskRepository.getScTaskByUuid(taskUUID).getJobList()
+        .forEach(job -> result.put(job.getUuid(), Map.of("status", job.getStatus())));
+    return result;
   }
 }

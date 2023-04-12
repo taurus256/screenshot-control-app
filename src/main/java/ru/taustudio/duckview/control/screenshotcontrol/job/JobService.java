@@ -95,32 +95,13 @@ public class JobService {
 				.status(TaskStatus.CREATED)
 				.build();
 		jobRepository.save(job);
-		sendToKafka(job.getId(), renderer, operationSystem, url, task.getResolution());
+		sendToKafka(job.getId(), job.getUuid(), renderer, operationSystem, url, task.getResolution());
 	}
 
-	private void sendToAgent(Long jobId, RENDERER renderer, OS os, String targetUrl, Resolution res) {
-		try {
-			Boolean isProcessedNow = restTemplate.getForObject("http://AGENT-"
-							+ os.name() + "-"
-							+ renderer.name()
-							+ "/screenshot?url=" + targetUrl
-							+ "&width=" + res.getWidth()
-							+ "&height=" + res.getHeight()
-							+ "&jobId=" + jobId
-					, Boolean.class);
-
-			if (Boolean.TRUE.equals(isProcessedNow))
-				setJobStatus(jobId, TaskStatus.PROCESS);
-			else
-				setJobStatus(jobId, TaskStatus.PENDING);
-		} catch (RestClientException ex){
-			setJobStatus(jobId, TaskStatus.ERROR);
-		}
-	}
-
-	private void sendToKafka(Long jobId, RENDERER renderer, OS os, String targetUrl, Resolution res){
+	private void sendToKafka(Long jobId, String jobUUID, RENDERER renderer, OS os, String targetUrl, Resolution res){
 		JobDescription job = JobDescription.builder()
 				.jobId(jobId)
+				.jobUUID(jobUUID)
 				.url(targetUrl)
 				.width(res.getWidth())
 				.height(res.getHeight())
@@ -129,23 +110,27 @@ public class JobService {
 	}
 
 	private String getTopicName(OS os, RENDERER renderer){
-		return os.getShortname() + "_" + renderer.name().toLowerCase();
+		return os.getShortname() + "_" + renderer.name();
 	}
 
-	public byte[] getJobImageData(Long id) throws IOException {
-		File f = new File(FILE_DIRECTORY + id + FILE_EXTENSION);
+	public byte[] getJobImageData(String jobUUID) throws IOException {
+		File f = new File(FILE_DIRECTORY + jobUUID + FILE_EXTENSION);
 		return Files.readAllBytes(f.toPath());
 	}
 
-	public void saveDataFromAgent(Long jobId, ByteArrayResource resource) throws IOException{
-		String fileName = jobId.toString();
-		FileUtilMethods.writeImage(fileName, resource.getByteArray());
-		imageProcessingService.generatePreview(jobId, resource);
-		setJobStatus(jobId, TaskStatus.SUCCESS);
+	public byte[] getJobImagePreview(String uuid) throws IOException {
+		File f = new File(FILE_DIRECTORY + uuid + ".preview" + FILE_EXTENSION);
+		return Files.readAllBytes(f.toPath());
 	}
 
-	private void setJobStatus(Long jobId, TaskStatus status) {
-		ScJob job =jobRepository.getReferenceById(jobId);
+	public void saveDataFromAgent(String jobUUID, ByteArrayResource resource) throws IOException{
+		FileUtilMethods.writeImage(jobUUID, resource.getByteArray());
+		imageProcessingService.generatePreview(jobUUID, resource);
+		setJobStatus(jobUUID, TaskStatus.SUCCESS);
+	}
+
+	private void setJobStatus(String jobUUID, TaskStatus status) {
+		ScJob job = jobRepository.getScJobByUuid(jobUUID);
 		job.setStatus(status);
 		jobRepository.save(job);
 	}

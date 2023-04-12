@@ -16,9 +16,9 @@ public class TaskController {
 	@Autowired
 	TaskService taskService;
 
-	@GetMapping("/{taskId}")
-	public String getTask(@PathVariable Long taskId, Model model){
-		model.addAttribute("task", taskService.getTask(taskId));
+	@GetMapping("/{taskUUID}")
+	public String getTask(@PathVariable String taskUUID, Model model){
+		model.addAttribute("task", taskService.getTask(taskUUID));
 		return "task";
 	}
 
@@ -37,13 +37,13 @@ public class TaskController {
 		task = taskService.createTask(task);
 		model.addAttribute("task", task);
 		model.addAttribute("applicationNames", taskService.getAppNamesFromContext());
-		return "redirect:/task/" + task.getId();
+		return "redirect:/task/" + task.getUuid();
 	}
 
 	@GetMapping("/diff")
-	public String generateDiffs(@RequestParam Long taskId, @RequestParam Long sampleJobId){
-		taskService.startDiffGeneration(taskId, sampleJobId);
-		return "redirect:/task/" + taskId;
+	public String generateDiffs(@RequestParam String taskUuid, @RequestParam Long sampleJobId){
+		taskService.startDiffGeneration(taskUuid, sampleJobId);
+		return "redirect:/task/" + taskUuid;
 	}
 
 }
