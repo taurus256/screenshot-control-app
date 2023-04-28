@@ -49,19 +49,19 @@
         <div class="row p-2">
             <div class="col-sm-6 bg-light">
                 <h4>Windows:</h4>
-                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("AGENT-WINDOWS-EDGE")}'>
+                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("WIN_EDGE")}'>
                     <input class="form-check-input" type="checkbox" name="winEdge" value="true" id="winEdge">
                     <label class="form-check-label" for="winEdge">Edge</label>
                 </div>
 
-                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("AGENT-WINDOWS-FIREFOX")}'>
+                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("WIN_FIREFOX")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winFirefox" id="winFF">
                     <label class="form-check-label" for="winFF">
                         Firefox
                     </label>
                 </div>
 
-                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("AGENT-WINDOWS-CHROME")}'>
+                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("WIN_CHROME")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winChrome"
                            id="winChrome">
                     <label class="form-check-label" for="winChrome">
@@ -69,7 +69,7 @@
                     </label>
                 </div>
 
-                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("AGENT-WINDOWS-OPERA")}'>
+                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("WIN-OPERA")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winOpera"
                            id="winOpera">
                     <label class="form-check-label" for="winOpera">
@@ -80,14 +80,14 @@
 
             <div class="col-sm-6 bg-light">
                 <h4>Mac OS:</h4>
-                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("AGENT-MACOS-SAFARI")}'>
+                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("MAC_SAFARI")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="macSafari"
                            id="macSafari">
                     <label class="form-check-label" for="macSafari">
                         Safari
                     </label>
                 </div>
-                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("AGENT-MACOS-FIREFOX")}'>
+                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("MAC_FIREFOX")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="macFirefox"
                            id="macFirefox">
                     <label class="form-check-label" for="macFirefox">
@@ -95,14 +95,14 @@
                     </label>
                 </div>
                 <h4>iOS:</h4>
-                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("AGENT-IOS-IPHONESE")}'>
+                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("IOS_IPHONESE")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="iosIPHONE_SE" id="iosIPHONE_SE">
                     <label class="form-check-label" for="iosIPHONE_SE">
                         iPhone SE
                     </label>
                 </div>
 
-                <div class="form-check checkbox-inline " th:if='${applicationNames!=null && applicationNames.contains("AGENT-IOS-IPHONEPRO")}'>
+                <div class="form-check checkbox-inline " th:if='${applicationNames!=null && applicationNames.contains("IOS_IPHONEPRO")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="iosIPHONE_PRO"
                            id="iosIPHONE_PRO">
                     <label class="form-check-label" for="iosIPHONE_PRO">
@@ -110,7 +110,7 @@
                     </label>
                 </div>
 
-                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("AGENT-IOS-IPAD")}'>
+                <div class="form-check  checkbox-inline" th:if='${applicationNames!=null && applicationNames.contains("IOS_IPAD")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="iosIPAD"
                            id="iosIPAD">
                     <label class="form-check-label" for="iosIPAD">

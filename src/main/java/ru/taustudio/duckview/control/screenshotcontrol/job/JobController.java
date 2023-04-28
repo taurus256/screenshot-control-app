@@ -29,4 +29,14 @@ public class JobController {
 	public byte[] getJobImagePreview(@PathVariable String jobUUID) throws IOException {
 		return jobService.getJobImagePreview(jobUUID);
 	}
+
+	@GetMapping(value = "/{jobUUID}/diff/preview", produces = MediaType.IMAGE_PNG_VALUE)
+	public byte[] getJobImageDiffPreview(@PathVariable String jobUUID) throws IOException {
+		return jobService.getJobImageDiffPreview(jobUUID);
+	}
+
+	@GetMapping(value = "/{jobUUID}/diff/show", produces = MediaType.IMAGE_PNG_VALUE)
+	public byte[] getJobImageDiff(@PathVariable String jobUUID) throws IOException {
+		return jobService.getJobImageDiff(jobUUID);
+	}
 }

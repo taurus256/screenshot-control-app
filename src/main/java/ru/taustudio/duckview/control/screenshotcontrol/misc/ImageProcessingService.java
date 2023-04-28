@@ -4,16 +4,22 @@ import static ru.taustudio.duckview.control.screenshotcontrol.misc.FileUtilMetho
 import static ru.taustudio.duckview.control.screenshotcontrol.misc.FileUtilMethods.readImage;
 import static ru.taustudio.duckview.control.screenshotcontrol.misc.FileUtilMethods.writeImage;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
 import org.imgscalr.Scalr;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.css.Rect;
 import pazone.ashot.Screenshot;
 import pazone.ashot.comparison.ImageDiff;
 import pazone.ashot.comparison.ImageDiffer;
@@ -38,16 +44,24 @@ public class ImageProcessingService {
     }
   }
 
-  public void generateDiffs(String sampleId, List<String> instances) {
+  public Set<String> generateDiffs(String sampleUUID, List<String> instances) {
+    Set<String> resultSet = new HashSet<>();
     try {
       ImageDiffer imageDiffer = new ImageDiffer();
-      BufferedImage sampleImage = readImage(sampleId);
-      for (String instanceId: instances){
-        ImageDiff diff = imageDiffer.makeDiff(sampleImage, readImage(instanceId));
-        writeImage(instanceId + ".diff", diff.getTransparentMarkedImage());
+      BufferedImage sampleImage = readImage(sampleUUID);
+      for (String instanceUuid: instances){
+        ImageDiff diff = imageDiffer.makeDiff(sampleImage, readImage(instanceUuid));
+        writeImage(instanceUuid + ".diff", diff.getTransparentMarkedImage());
+        BufferedImage resized = Scalr.resize(diff.getTransparentMarkedImage() ,300, Scalr.OP_ANTIALIAS);
+        if (resized.getWidth()>100){
+          resized.setData(resized.getData(new Rectangle(0,0,99, Math.min(resized.getHeight(), 299))));
+        }
+        writeImage(instanceUuid + ".diff.preview", resized);
+        resultSet.add(instanceUuid);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
+  return resultSet;
   }
 }

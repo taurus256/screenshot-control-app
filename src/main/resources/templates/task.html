@@ -18,29 +18,104 @@
     body {
         background-color: var(--background-color);
         color: var(--text-color);
+    }
+    h1{
+        text-align:center;
+        font-weight:bold;
+        margin:10px;
+    }
+
+    .mycontainer{
+        display: flex;
+        flex-wrap: wrap;
         margin: 10px;
     }
 
-    .block {
-        width: 310px;
-        display: inline-block;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        background-color: var(--secondary-color);
+    .block{
         text-align: center;
         border-radius: 10px;
         border: 1px solid black;
+        background-color: var(--secondary-color);
     }
 
-    .block h3 {
+    .message{
+        display: none; /* js включает здесь flex */
+        margin: 10px;
+        padding: 10px;
+        flex-grow:2;
+    }
+
+    fieldset{
+        display:flex;
+        flex-wrap: wrap;
+    }
+
+    .preview {
+        background-color: var(--secondary-color);
+        margin-right: 10px;
+        margin-bottom: 10px;
+        padding-bottom: 11px;
+    }
+
+    .preview h3 {
         text-align: center;
         font-size: 16pt;
         margin: 10px;
         height: 35px;
-        background-image: url("../static/windows.png");
         background-repeat: no-repeat;
         background-position: left;
         line-height: 35px;
+    }
+
+    .images{
+        display:flex;
+        align-content: center;
+        background-color: white;
+    }
+
+    .images img{
+        height: 300px;
+    }
+
+    .images a:nth-child(2){
+        border-left: 5px solid var(--secondary-color);
+    }
+
+    .images a:nth-child(2) img{
+        width: 100px;
+    }
+
+    .diff{
+        display:none;
+        justify-content: center;
+        flex-grow:2;
+    }
+
+    .selector{
+        display:none;
+    }
+
+    .lin{
+        background-image: url("../static/linux.png");
+    }
+    .win{
+        background-image: url("../static/windows.png");
+    }
+    .mac{
+        background-image: url("../static/apple.png");
+    }
+
+    .ios{
+        background-image: url("../static/ios.png");
+    }
+    .message span{
+        line-height: 40px;
+        text-align: left;
+        flex-grow: 2;
+    }
+
+    .message button{
+        margin-left: 10px;
     }
 </style>
 <body>
@@ -69,38 +144,152 @@
     </div>
 </nav>
 
-<h4 th:text="${task.getUrl()}">http://example.org</h4>
-
-<div class="block" th:each="job : ${task.getJobList()}" th:id="${job.getUuid()}" >
-    <h3 th:text="${job.getRenderer().name()}">Текст</h3>
-    <a>
-        <img src="https://via.placeholder.com/300x300" alt="Изображение" class="img-fluid"/>
-    </a>
-    <input type="checkbox" id="checkbox2" name="checkbox2" value="Выбор">
-    <label for="checkbox2">Выбор</label>
+<h1 th:text="${task.getUrl()}">http://example.org</h1>
+<div class="block message" id="message">
+    <span>Генерация скриншотов завершена. Выберите образец, чтобы создать карту различий</span>
+    <button type="button" class="btn btn-primary" onclick="startDiffGeneration()">Посмотреть
+        различия
+    </button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="alert"
+            aria-label="Закрыть"
+            onclick="hideComparisonUI()">X
+    </button>
+</div>
+<div class="mycontainer">
+        <form>
+            <fieldset>
+                <div class="block preview" th:each="job : ${task.getJobList()}"
+                     th:id="${job.getUuid()}">
+                   <div> <h3 th:class="${job.getOperationSystem().getShortname().toLowerCase()}"
+                        th:text="${job.getRenderer().name()}">
+                        Текст</h3></div>
+                    <div class="images">
+                        <a class="a_preview">
+                            <img src="https://via.placeholder.com/300x300" alt="Изображение"
+                                 />
+                        </a>
+                        <a class="diff">
+                                <img src="https://via.placeholder.com/100x300" alt="Изображение"/>
+                        </a>
+                    </div>
+                    <div class="selector">
+                        <input type="radio" th:id="'job' + ${job.getId()}" name="checkbox"
+                               value="Выбор">
+                        <label th:for="'job' + ${job.getId()}">Взять за образец</label>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
 </div>
 
 <script th:inline="javascript">
-    function update(taskUUID) {
-        $.getJSON('../rest/' + taskUUID + "/data", function (res) {
+/*[+
+        window.taskUUID = [[${task.getUuid()}]]
++]*/
+</script>
+<script>
+
+    function onPreviewGenerationFinished(isPreviewElements){
+        if (!isPreviewElements) {
+            $('#message').css("display", "flex");
+            $('.selector').css('display', "block");
+        }
+        clearInterval(window.previewInterval);
+    }
+
+    function startDiffGeneration(){
+        let sampleJobId = $("input:checked").parent().parent().attr("id");
+        if (sampleJobId === undefined){
+            alert("Выберите образец для сравнения");
+            return;
+        }
+        $.ajax({ type: "POST",
+            url: "../task/" + window.taskUUID  + "/diff/" + sampleJobId,
+            success: pollDiffData,
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Произошла ошибка при загрузке данных. Возможно, отсутствует соединение");
+            }
+        });
+        $('#message').css("display", "none");
+    }
+
+    function onDiffGenerationFinished(){
+        clearInterval(window.diffInterval);
+        hideComparisonUI();
+    }
+
+    function pollDiffData() {
+        $.getJSON('../rest/' + window.taskUUID + "/data", function (res) {
+            let isNotUpdated = false;
             $.each(res, function (id, obj) {
-                if (obj.status === "SUCCESS") {
-                    let a = $('#' + id + ' a');
-                    if (a.prop("href") === "") {
-                        let link = "/job/" + id;
-                        a.children("img").prop("src", link + "/preview");
-                        a.prop("href", link + "/show");
+                if (obj.status === "PREVIEW_IS_READY") {
+                        updateDiffPreview(id);
+                    }
+                    else {
+                        isNotUpdated = true;
                     }
                 }
-            });
+            );
+            if (!isNotUpdated) {
+                onDiffGenerationFinished();
+            }
         });
     }
+
+    function updateDiffPreview(id){
+        a = $('#' + id + ' .diff');
+        a.css("display", "flex");
+        if (a.prop("href") === "") {
+            let link = "/job/" + id;
+            let img = a.children("img");
+            img.show();
+            img.prop("src", link + "/diff/preview");
+            a.prop("href", link + "/diff/show");
+        }
+    }
+
+    function updatePreview(id){
+        let a = $('#' + id + ' .a_preview');
+        if (a.prop("href") === "") {
+            let link = "/job/" + id;
+            a.children("img").prop("src", link + "/preview");
+            a.prop("href", link + "/show");
+        }
+    }
+
+    function pollPreviewData() {
+        $.getJSON('../rest/' + window.taskUUID + "/data", function (res) {
+            let isNotUpdatedElements = false;
+            let isPreviewElements = false;
+            $.each(res, function (id, obj) {
+                if (obj.status === "SUCCESS" || obj.status === "PREVIEW_IS_READY") {
+                    updatePreview(id);
+                    if (obj.status === "PREVIEW_IS_READY") {
+                        updateDiffPreview(id);
+                        isPreviewElements = true;
+                    }
+                } else {
+                    isNotUpdatedElements = true;
+                }
+            });
+            if (!isNotUpdatedElements) {
+                onPreviewGenerationFinished(isPreviewElements);
+            }
+        });
+    }
+
+    function hideComparisonUI(){
+        $('#message').css("display", "none");
+        $('.selector').css('display', "none");
+    }
+
+    function startDiffPolling(){
+        window.diffInterval = setInterval(pollDiffData, 10000);
+    }
+
     window.onload = function() {
-        /*[+
-        let taskUUID = [[${task.getUuid()}]]
-        +]*/
-        update(taskUUID);
-        setInterval(update, 10000, taskUUID);
+        pollPreviewData();
+        window.previewInterval = setInterval(pollPreviewData, 10000);
     };
 </script>
 </body>

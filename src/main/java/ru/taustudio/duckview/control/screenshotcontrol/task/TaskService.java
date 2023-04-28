@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScTask;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
 import ru.taustudio.duckview.control.screenshotcontrol.job.JobService;
 
 import java.util.ArrayList;
@@ -71,16 +71,25 @@ public class TaskService {
     return applicationNames;
   }
 
-  public void startDiffGeneration(String taskUUID, Long jobId) {
-    final String sampleId = taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
+  public void startDiffGeneration(String taskUUID, String jobUUID) {
+    //Проверяем, что такой job-образец у данного task вообще есть
+    final String sampleUUID = taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
         .filter(job -> Objects.equals(
-            job.getId(), jobId)).map(job -> job.getId().toString()).findFirst().orElseThrow();
-    final List<String> instances = taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
+            job.getUuid(), jobUUID)).map(ScJob::getUuid).findFirst().orElseThrow();
+    //Формируем список для сравнения с образцом
+    final List<String> instanceUUIDs = taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
         .filter(job -> !Objects.equals(
-            job.getId(), jobId)).map(job -> job.getId().toString()).collect(Collectors.toList());
-    System.out.println("sampleId = " + sampleId);
-    System.out.println("instances = " + instances);
-    imageProcessingService.generateDiffs(sampleId, instances);
+            job.getUuid(), jobUUID)).map(ScJob::getUuid).collect(Collectors.toList());
+    System.out.println("sampleId = " + sampleUUID);
+    System.out.println("instances = " + instanceUUIDs);
+    Set<String> previewReadySet = imageProcessingService.generateDiffs(sampleUUID, instanceUUIDs);
+    instanceUUIDs.forEach(instanceUUID -> {
+      if (previewReadySet.contains(instanceUUID)) {
+        jobService.setJobStatusByUUID(instanceUUID, TaskStatus.PREVIEW_IS_READY);
+      } else {
+        jobService.setJobStatusByUUID(instanceUUID, TaskStatus.ERROR);
+      }
+    });
   }
 
   public Map<String, Object> getJobDataList(String taskUUID) {

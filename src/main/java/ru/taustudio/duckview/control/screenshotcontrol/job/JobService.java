@@ -123,15 +123,26 @@ public class JobService {
 		return Files.readAllBytes(f.toPath());
 	}
 
+	public byte[] getJobImageDiff(String uuid) throws IOException {
+		File f = new File(FILE_DIRECTORY + uuid + ".diff" + FILE_EXTENSION);
+		return Files.readAllBytes(f.toPath());
+	}
+
+	public byte[] getJobImageDiffPreview(String uuid) throws IOException {
+		File f = new File(FILE_DIRECTORY + uuid + ".diff.preview" + FILE_EXTENSION);
+		return Files.readAllBytes(f.toPath());
+	}
+
 	public void saveDataFromAgent(String jobUUID, ByteArrayResource resource) throws IOException{
 		FileUtilMethods.writeImage(jobUUID, resource.getByteArray());
 		imageProcessingService.generatePreview(jobUUID, resource);
-		setJobStatus(jobUUID, TaskStatus.SUCCESS);
+		setJobStatusByUUID(jobUUID, TaskStatus.SUCCESS);
 	}
 
-	private void setJobStatus(String jobUUID, TaskStatus status) {
+	public void setJobStatusByUUID(String jobUUID, TaskStatus status) {
 		ScJob job = jobRepository.getScJobByUuid(jobUUID);
 		job.setStatus(status);
 		jobRepository.save(job);
 	}
+
 }

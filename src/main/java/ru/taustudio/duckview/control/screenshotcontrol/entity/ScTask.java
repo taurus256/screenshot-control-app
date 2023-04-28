@@ -18,7 +18,7 @@ import java.util.List;
  * A DVTask.
  */
 @Entity
-@Table(name = "sc_task", indexes = @Index(columnList="uuid"))
+@Table(name = "sc_task")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Data
 @EqualsAndHashCode
