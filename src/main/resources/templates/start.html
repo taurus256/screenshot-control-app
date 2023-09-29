@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Start!</title>
+    <title>DarkView</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand text-primary" href="/">ScreenshotMaker</a>
+        <a class="navbar-brand text-primary" href="/"><img src="../static/dark-view.png" height="30"></a>
         <div class="nav-item" th:if="${#httpServletRequest.remoteUser!=null}">
             <span></span>
         </div>
@@ -69,7 +69,7 @@
                     </label>
                 </div>
 
-                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("WIN-OPERA")}'>
+                <div class="form-check" th:if='${applicationNames!=null && applicationNames.contains("WIN_OPERA")}'>
                     <input class="form-check-input  checkbox-inline" type="checkbox" value="true" name="winOpera"
                            id="winOpera">
                     <label class="form-check-label" for="winOpera">

@@ -47,12 +47,12 @@ public class ImageProcessingService {
   public Set<String> generateDiffs(String sampleUUID, List<String> instances) {
     Set<String> resultSet = new HashSet<>();
     try {
-      ImageDiffer imageDiffer = new ImageDiffer();
       BufferedImage sampleImage = readImage(sampleUUID);
       for (String instanceUuid: instances){
+        ImageDiffer imageDiffer = new ImageDiffer();
         ImageDiff diff = imageDiffer.makeDiff(sampleImage, readImage(instanceUuid));
         writeImage(instanceUuid + ".diff", diff.getTransparentMarkedImage());
-        BufferedImage resized = Scalr.resize(diff.getTransparentMarkedImage() ,300, Scalr.OP_ANTIALIAS);
+        BufferedImage resized = Scalr.resize(diff.getTransparentMarkedImage(),300, Scalr.OP_ANTIALIAS);
         if (resized.getWidth()>100){
           resized.setData(resized.getData(new Rectangle(0,0,99, Math.min(resized.getHeight(), 299))));
         }

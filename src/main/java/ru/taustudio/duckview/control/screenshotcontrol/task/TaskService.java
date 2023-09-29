@@ -2,6 +2,7 @@ package ru.taustudio.duckview.control.screenshotcontrol.task;
 
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -62,10 +63,8 @@ public class TaskService {
   public Set<String> getAppNamesFromContext() {
     Set<String> applicationNames = new HashSet<>();
     for (Application app : eurekaClient.getApplications().getRegisteredApplications()) {
-      for (String agent : app.getName().split(",")) {
-        if (!"CONTROL-APP".equals(app.getName())) {
-          applicationNames.add(agent);
-        }
+      if (!"CONTROL-APP".equals(app.getName())) {
+        applicationNames.addAll(Arrays.asList(app.getName().split(",")));
       }
     }
     return applicationNames;
