@@ -1,5 +1,8 @@
 package ru.taustudio.duckview.control.screenshotcontrol.task;
 
+import static ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus.PREVIEW_IS_READY;
+import static ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus.SUCCESS;
+
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
 import java.util.Arrays;
@@ -97,4 +100,33 @@ public class TaskService {
         .forEach(job -> result.put(job.getUuid(), Map.of("status", job.getStatus())));
     return result;
   }
+
+  public Map<String, Object> getJobDataListV2(String taskUUID) {
+    Map<String, Object> result = new HashMap<>();
+    result.put("uuid", taskUUID);
+    result.put("cards", taskRepository.getScTaskByUuid(taskUUID).getJobList(). stream()
+        .map(job -> Map.of("id", job.getId(),
+                "uuid", job.getUuid(),
+            "os", job.getOperationSystem().getShortname(),
+            "browser", job.getRenderer().name(),
+            "status", job.getStatus().name(),
+            "links", generateLinks(job))
+            )
+        .collect(Collectors.toList()));
+    return result;
+  }
+
+  private Map<String, String> generateLinks(ScJob job){
+    Map<String, String> res = new HashMap<>();
+    if (SUCCESS.equals(job.getStatus()) || PREVIEW_IS_READY.equals(job.getStatus())){
+      res.put("screenPreview", "/{jobUUID}/preview".replace("{jobUUID}", job.getUuid()));
+      res.put("screenFull", "/{jobUUID}/show".replace("{jobUUID}", job.getUuid()));
+    }
+    if (PREVIEW_IS_READY.equals(job.getStatus())) {
+      res.put("diffPreview", "/{jobUUID}/diff/preview".replace("{jobUUID}", job.getUuid()));
+      res.put("diffFull", "/{jobUUID}/diff/show".replace("{jobUUID}", job.getUuid()));
+    }
+    return res;
+  }
+
 }

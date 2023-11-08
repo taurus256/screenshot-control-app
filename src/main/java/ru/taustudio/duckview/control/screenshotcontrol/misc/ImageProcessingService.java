@@ -21,6 +21,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.css.Rect;
 import pazone.ashot.Screenshot;
+import pazone.ashot.comparison.DiffMarkupPolicy;
 import pazone.ashot.comparison.ImageDiff;
 import pazone.ashot.comparison.ImageDiffer;
 import pazone.ashot.coordinates.Coords;
