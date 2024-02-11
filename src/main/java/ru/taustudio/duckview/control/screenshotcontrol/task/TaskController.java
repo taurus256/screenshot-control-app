@@ -19,7 +19,7 @@ public class TaskController {
 	@GetMapping("/{taskUUID}")
 	public String getTask(@PathVariable String taskUUID, Model model){
 		model.addAttribute("task", taskService.getTask(taskUUID));
-		return "task";
+		return "darkview/front-end/pages/results";
 	}
 
 	@GetMapping("/history")
@@ -30,8 +30,9 @@ public class TaskController {
 
 	@PostMapping
 	public String addTask(@ModelAttribute("task") @Valid ScTask task, BindingResult bindingResult, Model model) {
-		if (bindingResult.hasErrors() || task.getUrl() == null || task.getUrl().isEmpty()) {
-			return "start";
+		if (bindingResult.hasErrors() || task.getUrl() == null || task.getUrl().isEmpty() || task.getResolution() == null) {
+			System.out.println("TASK HAS ERRORS");
+			return "darkview/front-end/pages/start";
 		}
 		task.setUrl("http://" + task.getUrl());
 		task = taskService.createTask(task);

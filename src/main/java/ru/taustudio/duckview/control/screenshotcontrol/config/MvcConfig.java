@@ -1,7 +1,6 @@
 package ru.taustudio.duckview.control.screenshotcontrol.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,16 +9,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry){
-		registry.addViewController("/").setViewName("start");
-		registry.addViewController("/start").setViewName("start");
-		registry.addViewController("/home").setViewName("home");
-		registry.addViewController("/success").setViewName("success");
+		registry.addViewController("/").setViewName("darkview/front-end/pages/main");
+		registry.addViewController("/start").setViewName("darkview/front-end/pages/params");
+		registry.addViewController("/home").setViewName("darkview/front-end/pages/main");
+		registry.addViewController("/register").setViewName("darkview/front-end/pages/registration");
+		registry.addViewController("/success").setViewName("darkview/front-end/pages/start");
 		registry.addViewController("/add_user").setViewName("user_edit");
 		registry.addViewController("/task/history").setViewName("history");
+		registry.addViewController("/task").setViewName("darkview/front-end/pages/results");
+		registry.addViewController("/404").setViewName("darkview/front-end/pages/404");
 	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry){
+		registry.addResourceHandler("/styles/**").addResourceLocations("classpath:/templates/darkview/front-end/styles/");
+		registry.addResourceHandler("/scripts/**").addResourceLocations("classpath:/templates/darkview/front-end/scripts/");
+		registry.addResourceHandler("/src/**").addResourceLocations("classpath:/templates/darkview/front-end/src/");
 		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
 	}
 }

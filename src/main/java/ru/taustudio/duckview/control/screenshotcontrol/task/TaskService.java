@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.config.Task;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
@@ -104,15 +105,18 @@ public class TaskService {
   public Map<String, Object> getJobDataListV2(String taskUUID) {
     Map<String, Object> result = new HashMap<>();
     result.put("uuid", taskUUID);
-    result.put("cards", taskRepository.getScTaskByUuid(taskUUID).getJobList(). stream()
-        .map(job -> Map.of("id", job.getId(),
-                "uuid", job.getUuid(),
-            "os", job.getOperationSystem().getShortname(),
-            "browser", job.getRenderer().name(),
-            "status", job.getStatus().name(),
-            "links", generateLinks(job))
-            )
-        .collect(Collectors.toList()));
+    ScTask task = taskRepository.getScTaskByUuid(taskUUID);
+    if (task != null){
+      result.put("cards", taskRepository.getScTaskByUuid(taskUUID).getJobList(). stream()
+              .map(job -> Map.of("id", job.getId(),
+                      "uuid", job.getUuid(),
+                      "os", job.getOperationSystem().getShortname(),
+                      "browser", job.getRenderer().name(),
+                      "status", job.getStatus().name(),
+                      "links", generateLinks(job))
+              )
+              .collect(Collectors.toList()));
+    }
     return result;
   }
 

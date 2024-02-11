@@ -56,6 +56,7 @@ public class ScTask implements Serializable {
     @Pattern(regexp="^.*\\..*")
     private String url;
 
+
     @Enumerated(EnumType.STRING)
     @Column(name = "resolution")
     private Resolution resolution;
@@ -79,4 +80,6 @@ public class ScTask implements Serializable {
     @ManyToOne
     @JsonIgnore
     private ScUser user;
+
+
 }
