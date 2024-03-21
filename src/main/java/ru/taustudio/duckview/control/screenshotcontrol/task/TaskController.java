@@ -1,5 +1,6 @@
 package ru.taustudio.duckview.control.screenshotcontrol.task;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,9 +43,10 @@ public class TaskController {
 	}
 
 	@PostMapping("/{taskUUID}/diff/{sampleJobUUID}")
-	public String generateDiffs(@PathVariable String taskUUID, @PathVariable String sampleJobUUID){
+	@ResponseBody
+	public Map generateDiffs(@PathVariable String taskUUID, @PathVariable String sampleJobUUID){
 		taskService.startDiffGeneration(taskUUID, sampleJobUUID);
-		return "redirect:/task/" + taskUUID;
+		return Map.of("render_diff_start_for", taskUUID);
 	}
 
 }
