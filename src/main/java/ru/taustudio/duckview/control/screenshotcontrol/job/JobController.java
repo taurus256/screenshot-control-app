@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus;
 
 @RestController
 @RequestMapping("/job")
@@ -18,6 +19,11 @@ public class JobController {
 	@PutMapping("/{jobUUID}")
 	public void updateJob(@PathVariable String jobUUID, @RequestBody ByteArrayResource bars) throws IOException {
 		jobService.saveDataFromAgent(jobUUID, bars);
+	}
+
+	@PutMapping("/{jobUUID}/status/{jobStatus}")
+	public void switchJobStatus(@PathVariable String jobUUID, @PathVariable JobStatus jobStatus) throws IOException {
+		jobService.setJobStatusByUUID(jobUUID, jobStatus);
 	}
 
 	@GetMapping(value = "/{jobUUID}/show", produces = MediaType.IMAGE_PNG_VALUE)

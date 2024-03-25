@@ -9,7 +9,7 @@ import java.time.Instant;
 import javax.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus;
 
 /**
  * A DVJob.
@@ -50,7 +50,7 @@ public class ScJob implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private TaskStatus status;
+    private JobStatus status;
 
 
     @Column(name = "status_description")

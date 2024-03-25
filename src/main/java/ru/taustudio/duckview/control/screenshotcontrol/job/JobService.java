@@ -5,14 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScTask;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.RENDERER;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.OS;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.Resolution;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,7 +91,7 @@ public class JobService {
 				.operationSystem(operationSystem)
 				.url(url)
 				.task(task)
-				.status(TaskStatus.CREATED)
+				.status(JobStatus.CREATED)
 				.build();
 		jobRepository.save(job);
 		sendToKafka(job.getId(), job.getUuid(), renderer, operationSystem, url, task.getResolution());
@@ -136,10 +135,10 @@ public class JobService {
 	public void saveDataFromAgent(String jobUUID, ByteArrayResource resource) throws IOException{
 		FileUtilMethods.writeImage(jobUUID, resource.getByteArray());
 		imageProcessingService.generatePreview(jobUUID, resource);
-		setJobStatusByUUID(jobUUID, TaskStatus.SUCCESS);
+		setJobStatusByUUID(jobUUID, JobStatus.SUCCESS);
 	}
 
-	public void setJobStatusByUUID(String jobUUID, TaskStatus status) {
+	public void setJobStatusByUUID(String jobUUID, JobStatus status) {
 		ScJob job = jobRepository.getScJobByUuid(jobUUID);
 		job.setStatus(status);
 		jobRepository.save(job);

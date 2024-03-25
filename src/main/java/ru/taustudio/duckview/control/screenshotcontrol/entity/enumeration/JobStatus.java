@@ -1,9 +1,9 @@
 package ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration;
 
-public enum TaskStatus {
+public enum JobStatus {
 	CREATED,
 	PENDING,
-	PROCESS,
+	IN_PROGRESS,
 	ERROR,
 	SUCCESS,
 	PREVIEW_IS_READY

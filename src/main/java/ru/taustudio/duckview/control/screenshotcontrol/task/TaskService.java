@@ -1,7 +1,7 @@
 package ru.taustudio.duckview.control.screenshotcontrol.task;
 
-import static ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus.PREVIEW_IS_READY;
-import static ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus.SUCCESS;
+import static ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus.PREVIEW_IS_READY;
+import static ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus.SUCCESS;
 
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
@@ -14,13 +14,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.config.Task;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScTask;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
-import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.TaskStatus;
+import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus;
 import ru.taustudio.duckview.control.screenshotcontrol.job.JobService;
 
 import java.util.ArrayList;
@@ -88,9 +87,9 @@ public class TaskService {
     Set<String> previewReadySet = imageProcessingService.generateDiffs(sampleUUID, instanceUUIDs);
     instanceUUIDs.forEach(instanceUUID -> {
       if (previewReadySet.contains(instanceUUID)) {
-        jobService.setJobStatusByUUID(instanceUUID, TaskStatus.PREVIEW_IS_READY);
+        jobService.setJobStatusByUUID(instanceUUID, JobStatus.PREVIEW_IS_READY);
       } else {
-        jobService.setJobStatusByUUID(instanceUUID, TaskStatus.ERROR);
+        jobService.setJobStatusByUUID(instanceUUID, JobStatus.ERROR);
       }
     });
   }
