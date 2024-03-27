@@ -144,4 +144,13 @@ public class JobService {
 		jobRepository.save(job);
 	}
 
+	public void setJobStatusByUUID(String jobUUID, JobStatus status, String description) {
+		ScJob job = jobRepository.getScJobByUuid(jobUUID);
+		job.setStatus(status);
+		if (description != null && description.length() > 256){
+			description = description.substring(0,255);
+		}
+		job.setStatusDescription(description);
+		jobRepository.save(job);
+	}
 }

@@ -112,6 +112,7 @@ public class TaskService {
                       "os", job.getOperationSystem().getShortname(),
                       "browser", job.getRenderer().name(),
                       "status", job.getStatus().name(),
+                      "statusDescription", job.getStatusDescription(),
                       "links", generateLinks(job))
               )
               .collect(Collectors.toList()));

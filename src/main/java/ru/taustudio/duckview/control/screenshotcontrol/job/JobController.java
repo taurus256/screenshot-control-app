@@ -1,5 +1,6 @@
 package ru.taustudio.duckview.control.screenshotcontrol.job;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -22,8 +23,13 @@ public class JobController {
 	}
 
 	@PutMapping("/{jobUUID}/status/{jobStatus}")
-	public void switchJobStatus(@PathVariable String jobUUID, @PathVariable JobStatus jobStatus) throws IOException {
-		jobService.setJobStatusByUUID(jobUUID, jobStatus);
+	public void switchJobStatus(@PathVariable String jobUUID, @PathVariable JobStatus jobStatus, @RequestBody(required = false)
+			Map<String,String> descriptionObject) throws IOException {
+		if (descriptionObject == null) {
+			jobService.setJobStatusByUUID(jobUUID, jobStatus);
+		} else {
+			jobService.setJobStatusByUUID(jobUUID, jobStatus, descriptionObject.get("description"));
+		}
 	}
 
 	@GetMapping(value = "/{jobUUID}/show", produces = MediaType.IMAGE_PNG_VALUE)
