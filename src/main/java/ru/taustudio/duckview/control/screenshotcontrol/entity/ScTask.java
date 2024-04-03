@@ -37,6 +37,7 @@ public class ScTask implements Serializable {
         iosIPAD = false;
         macSafari = false;
         macFirefox = false;
+        createTime = Instant.now();
     }
 
     private static final long serialVersionUID = 1L;
@@ -74,12 +75,10 @@ public class ScTask implements Serializable {
     private Boolean macSafari;
     private Boolean macFirefox;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<ScJob> jobList;
 
     @ManyToOne
     @JsonIgnore
     private ScUser user;
-
-
 }

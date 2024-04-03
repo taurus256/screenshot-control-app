@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
 @EnableWebMvc
+@EnableScheduling
 public class ScreenshotControlApplication {
 
 	public static void main(String[] args) {

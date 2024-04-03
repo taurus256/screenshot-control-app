@@ -1,6 +1,7 @@
 package ru.taustudio.duckview.control.screenshotcontrol.task;
 
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +36,10 @@ public class TaskController {
 			System.out.println("TASK HAS ERRORS");
 			return "darkview/front-end/pages/start";
 		}
-		task.setUrl("http://" + task.getUrl());
+		task.setUrl(StringUtils.deleteWhitespace(task.getUrl()));
+		if (!task.getUrl().startsWith("http://")){
+			task.setUrl("http://" + task.getUrl());
+		}
 		task = taskService.createTask(task);
 		model.addAttribute("task", task);
 		model.addAttribute("applicationNames", taskService.getAppNamesFromContext());

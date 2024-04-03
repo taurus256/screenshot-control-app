@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
+import org.apache.commons.io.FileUtils;
 
 public class FileUtilMethods {
   static final String FILE_DIRECTORY = "/tmp/";
@@ -26,5 +27,10 @@ public class FileUtilMethods {
   public static BufferedImage readImage(String id) throws IOException {
     File f = new File(FILE_DIRECTORY + id + FILE_EXTENSION);
     return ImageIO.read(f);
+  }
+
+  public static void deleteFile(String id) throws IOException {
+    File f = new File(FILE_DIRECTORY + id + FILE_EXTENSION);
+    FileUtils.delete(f);
   }
 }

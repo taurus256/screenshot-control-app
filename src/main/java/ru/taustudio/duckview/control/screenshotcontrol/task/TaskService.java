@@ -106,13 +106,13 @@ public class TaskService {
     result.put("uuid", taskUUID);
     ScTask task = taskRepository.getScTaskByUuid(taskUUID);
     if (task != null){
-      result.put("cards", taskRepository.getScTaskByUuid(taskUUID).getJobList(). stream()
+      result.put("cards", taskRepository.getScTaskByUuid(taskUUID).getJobList().stream()
               .map(job -> Map.of("id", job.getId(),
                       "uuid", job.getUuid(),
                       "os", job.getOperationSystem().getShortname(),
                       "browser", job.getRenderer().name(),
                       "status", job.getStatus().name(),
-                      "statusDescription", job.getStatusDescription(),
+                      "statusDescription", job.getStatusDescription() == null ? "" : job.getStatusDescription(),
                       "links", generateLinks(job))
               )
               .collect(Collectors.toList()));
