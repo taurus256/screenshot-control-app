@@ -1,5 +1,6 @@
 package ru.taustudio.duckview.control.screenshotcontrol.user;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
@@ -20,6 +21,7 @@ public interface UserRepository extends CrudRepository<ScUser, Long> {
 	@Override
 	void delete(ScUser entity);
 
-	ScUser findScUsersByName(String name);
+	List<ScUser> findScUsersByName(String name);
+	ScUser getScUserByName(String name);
 }
 

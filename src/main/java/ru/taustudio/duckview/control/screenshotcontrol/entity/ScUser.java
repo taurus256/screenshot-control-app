@@ -48,6 +48,9 @@ public class ScUser implements Serializable, UserDetails {
     @Transient
     private String passwordString;
 
+    @Transient
+    private String passwordRepeat;
+
     @JsonIgnore
     @Column(name = "password_hash")
     private String password;
@@ -156,5 +159,13 @@ public class ScUser implements Serializable, UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getPasswordRepeat() {
+        return passwordRepeat;
+    }
+
+    public void setPasswordRepeat(String passwordRepeat) {
+        this.passwordRepeat = passwordRepeat;
     }
 }
