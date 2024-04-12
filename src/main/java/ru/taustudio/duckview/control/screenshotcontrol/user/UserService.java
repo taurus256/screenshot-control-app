@@ -1,22 +1,37 @@
 package ru.taustudio.duckview.control.screenshotcontrol.user;
 
+import com.netflix.discovery.EurekaClient;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
+import ru.taustudio.duckview.control.screenshotcontrol.misc.MailSendingService;
+import ru.taustudio.duckview.control.screenshotcontrol.token.TokenService;
 
 
 @Service
+@Slf4j
 public class UserService {
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
-
+	@Autowired
+	MailSendingService mailSendingService;
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	TokenService tokenService;
+
+	@Qualifier("eurekaClient")
+	@Autowired
+	EurekaClient eurekaClient;
 	Pattern pattern = Pattern.compile("[A-Za-z._0-9\\-]*@[A-Za-z._0-9\\-]*");
+
+	String CURRENT_APP_URL = "http://localhost:8081";
 
 	public void createUser(ScUser user) throws UserValidationException {
 		if (StringUtils.isEmpty(user.getName())){
@@ -44,5 +59,14 @@ public class UserService {
 			user.setPassword(passwordEncoder.encode(user.getPasswordString()));
 		}
 		userRepository.save(user);
+		String tokenUuid = tokenService.createTokenForUser(user);
+		mailSendingService.sendEmailToUser(user, "DarkView: подтверждение регистрации",
+				"Чтобы продолжить регистрацию, перейдите по " + getTokenLink(tokenUuid,"данной ссылке") + ".");
+	}
+
+	private String getTokenLink(String uuid, String linkText){
+		return "<a href=\"" +
+				CURRENT_APP_URL + "/api/token/" + uuid + "\">" +
+				linkText + "</a>";
 	}
 }

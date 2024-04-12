@@ -27,7 +27,8 @@ public class UserController {
 			model.addAttribute("message", uex.getMessage());
 			return "darkview/front-end/pages/registration";
 		}
-		return "darkview/front-end/pages/main";
+		model.addAttribute("user", user);
+		return "darkview/front-end/pages/wait_for_verification";
 	}
 
 }

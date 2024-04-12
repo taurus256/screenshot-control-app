@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
+import ru.taustudio.duckview.control.screenshotcontrol.misc.MailSendingService;
 
 @Component
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {

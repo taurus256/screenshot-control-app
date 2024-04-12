@@ -55,9 +55,12 @@ public class ScUser implements Serializable, UserDetails {
     @Column(name = "password_hash")
     private String password;
 
+    @Column(name="enabled")
+    private Boolean enabled = false;
+
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Long getId() {
         return this.id;
     }
@@ -97,8 +100,8 @@ public class ScUser implements Serializable, UserDetails {
         this.email = email;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,6 +120,7 @@ public class ScUser implements Serializable, UserDetails {
     }
 
     // prettier-ignore
+
     @Override
     public String toString() {
         return "ScUser{" +
@@ -125,13 +129,12 @@ public class ScUser implements Serializable, UserDetails {
             ", email='" + getEmail() + "'" +
             "}";
     }
-
     //------------------
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
-
     public String getPassword() {
         return password;
     }
@@ -167,5 +170,13 @@ public class ScUser implements Serializable, UserDetails {
 
     public void setPasswordRepeat(String passwordRepeat) {
         this.passwordRepeat = passwordRepeat;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

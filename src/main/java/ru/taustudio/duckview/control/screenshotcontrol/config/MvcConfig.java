@@ -13,7 +13,6 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/start").setViewName("darkview/front-end/pages/params");
 		registry.addViewController("/home").setViewName("darkview/front-end/pages/main");
 		registry.addViewController("/register").setViewName("darkview/front-end/pages/registration");
-		registry.addViewController("/success").setViewName("darkview/front-end/pages/start");
 		registry.addViewController("/login").setViewName("darkview/front-end/pages/login");
 		registry.addViewController("/task/history").setViewName("history");
 		registry.addViewController("/task").setViewName("darkview/front-end/pages/results");
