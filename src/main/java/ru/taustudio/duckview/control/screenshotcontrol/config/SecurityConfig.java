@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
+import ru.taustudio.duckview.control.screenshotcontrol.user.AuthenticationHandler;
 import ru.taustudio.duckview.control.screenshotcontrol.user.UserDetailsService;
 
 import java.util.Map;
@@ -33,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginProcessingUrl("/app_login")
 				.usernameParameter("login")
 				.passwordParameter("password")
+				.failureHandler(new AuthenticationHandler())
 				.defaultSuccessUrl("/start")
 				.and().logout().logoutSuccessUrl("/")
 				.and().anonymous().principal(new ScUser())

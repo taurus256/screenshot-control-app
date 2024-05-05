@@ -24,10 +24,10 @@ public class TaskController {
 		return "darkview/front-end/pages/results";
 	}
 
-	@GetMapping("/history")
+	@GetMapping("/profile")
 	public String getTaskHistory(Model model){
 		model.addAttribute("taskList", taskService.getTaskForCurrentUser());
-		return "history";
+		return "darkview/front-end/pages/profile";
 	}
 
 	@PostMapping

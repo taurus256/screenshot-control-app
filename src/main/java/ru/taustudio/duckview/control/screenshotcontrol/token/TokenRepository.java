@@ -11,4 +11,5 @@ import ru.taustudio.duckview.control.screenshotcontrol.entity.Token;
 public interface TokenRepository extends JpaRepository<Token, Long> {
   public Token findByUser(ScUser user);
   public Token findByUuidAndCreateTimeGreaterThanEqual(String uuid, LocalDateTime intervalStart);
+  public Token findByUserAndCreateTimeGreaterThanEqual(ScUser user, LocalDateTime intervalStart);
 }
