@@ -36,7 +36,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 				throw new DisabledException(
 						"Адрес вашей электронной почты ещё не подтвержден. Перейдите по ссылке, указанной в письме");
 			} else {
-				throw new EmailVerificationTokenHasExpiredException("Адрес электронной почты не был подтвержден в течение суток. Попробуйте создать пользователя заново");
+				throw new DisabledException("Адрес электронной почты не был подтвержден в течение суток. Попробуйте создать пользователя заново");
 			}
 		}
 
