@@ -37,7 +37,7 @@ public class TaskController {
 			return "darkview/front-end/pages/start";
 		}
 		task.setUrl(StringUtils.deleteWhitespace(task.getUrl()));
-		if (!task.getUrl().startsWith("http://")){
+		if (!task.getUrl().startsWith("http")){
 			task.setUrl("http://" + task.getUrl());
 		}
 		task = taskService.createTask(task);
