@@ -13,7 +13,8 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<ScTask, Long> {
 	List<ScTask> findAllByUser(ScUser user);
 	ScTask getScTaskByUuid(String uuid);
-
 	@EntityGraph(attributePaths = { "jobList" })
 	List<ScTask> findByCreateTimeLessThan(Instant time);
+
+	void deleteByUser(ScUser user);
 }

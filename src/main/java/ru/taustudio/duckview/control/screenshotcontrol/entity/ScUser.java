@@ -2,6 +2,7 @@ package ru.taustudio.duckview.control.screenshotcontrol.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,6 +60,12 @@ public class ScUser implements Serializable, UserDetails {
     private Boolean enabled = false;
 
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Token token;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<ScTask> taskList;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {

@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
 import ru.taustudio.duckview.control.screenshotcontrol.misc.MailSendingService;
+import ru.taustudio.duckview.control.screenshotcontrol.task.TaskRepository;
 import ru.taustudio.duckview.control.screenshotcontrol.token.TokenService;
 
 
@@ -24,6 +26,8 @@ public class UserService {
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
+	TaskRepository taskRepository;
+	@Autowired
 	TokenService tokenService;
 
 	@Qualifier("eurekaClient")
@@ -31,7 +35,7 @@ public class UserService {
 	EurekaClient eurekaClient;
 	Pattern pattern = Pattern.compile("[A-Za-z._0-9\\-]*@[A-Za-z._0-9\\-]*");
 
-	String CURRENT_APP_URL = "http://localhost:8081";
+	String CURRENT_APP_URL = "http://darkview.ru:8081";
 
 	public void createUser(ScUser user) throws UserValidationException {
 		if (StringUtils.isEmpty(user.getName())){
@@ -61,12 +65,10 @@ public class UserService {
 		userRepository.save(user);
 		String tokenUuid = tokenService.createTokenForUser(user);
 		mailSendingService.sendEmailToUser(user, "DarkView: подтверждение регистрации",
-				"Чтобы продолжить регистрацию, перейдите по " + getTokenLink(tokenUuid,"данной ссылке") + ".");
+				"Чтобы продолжить регистрацию, перейдите по данной ссылке: " + getTokenLink(tokenUuid) + ".");
 	}
 
-	private String getTokenLink(String uuid, String linkText){
-		return "<a href=\"" +
-				CURRENT_APP_URL + "/api/token/" + uuid + "\">" +
-				linkText + "</a>";
+	private String getTokenLink(String uuid){
+		return CURRENT_APP_URL + "/token/" + uuid;
 	}
 }
