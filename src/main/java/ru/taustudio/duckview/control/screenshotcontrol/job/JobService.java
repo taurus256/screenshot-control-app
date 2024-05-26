@@ -153,4 +153,19 @@ public class JobService {
 		job.setStatusDescription(description);
 		jobRepository.save(job);
 	}
+
+	public void retryJob(String jobUUID){
+		log.info("Start retrying {}", jobUUID);
+		ScJob job = jobRepository.getScJobByUuid(jobUUID);
+		job.setStatus(JobStatus.CREATED);
+		jobRepository.save(job);
+		try {
+			FileUtilMethods.deleteFile(job.getUuid());
+			FileUtilMethods.deleteFile(job.getUuid() + ".preview");
+		} catch (IOException e) {
+			log.error("Cannot delete preview files for {} on job retry", job.getUuid());
+		}
+		sendToKafka(job.getId(), job.getUuid(), job.getRenderer(), job.getOperationSystem(), job.getUrl(), job.getTask().getResolution());
+		log.info("Job {} has been retried", jobUUID);
+	}
 }

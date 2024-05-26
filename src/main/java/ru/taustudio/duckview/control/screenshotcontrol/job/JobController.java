@@ -51,4 +51,9 @@ public class JobController {
 	public byte[] getJobImageDiff(@PathVariable String jobUUID) throws IOException {
 		return jobService.getJobImageDiff(jobUUID);
 	}
+
+	@PutMapping(value = "/{jobUUID}/retry")
+	public void retryJob(@PathVariable String jobUUID) throws IOException {
+		jobService.retryJob(jobUUID);
+	}
 }
