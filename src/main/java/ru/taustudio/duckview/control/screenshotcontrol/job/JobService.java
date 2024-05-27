@@ -1,6 +1,7 @@
 package ru.taustudio.duckview.control.screenshotcontrol.job;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.UUID;
 import ru.taustudio.duckview.control.screenshotcontrol.misc.FileUtilMethods;
 import ru.taustudio.duckview.control.screenshotcontrol.misc.ImageProcessingService;
+import ru.taustudio.duckview.control.screenshotcontrol.misc.MonitoringService;
 import ru.taustudio.duckview.shared.JobDescription;
 
 @Service
@@ -33,6 +35,9 @@ public class JobService {
 
 	@Autowired
 	ImageProcessingService imageProcessingService;
+
+	@Autowired
+	MonitoringService monitoringService;
 
 	@Autowired
 	private KafkaTemplate<String, JobDescription> kafkaTemplate;
@@ -151,6 +156,10 @@ public class JobService {
 			description = description.substring(0,255);
 		}
 		job.setStatusDescription(description);
+		if (JobStatus.ERROR.equals(status)){
+			monitoringService.alertOnError(job.getTask(), job,
+					StringUtils.defaultString(description, "No description"));
+		}
 		jobRepository.save(job);
 	}
 

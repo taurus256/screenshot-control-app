@@ -16,8 +16,11 @@ public class MailSendingService {
   @Autowired
   JavaMailSender mailSender;
 
-  @Value("${mail.address}")
-  String mailAddress;
+  @Value("${mail.address.from}")
+  String mailAddressFrom;
+
+  @Value("${mail.address.admin}")
+  String mailAddressAdmin;
 
   public void sendEmailToUser(ScUser user, String subject, String text){
     if (StringUtils.isEmpty(user.getEmail())){
@@ -28,7 +31,17 @@ public class MailSendingService {
     email.setTo(user.getEmail());
     email.setSubject(subject);
     email.setText(text);
-    email.setFrom(mailAddress);
+    email.setFrom(mailAddressFrom);
     mailSender.send(email);
   }
+
+  public void sendEmailToAdmin(String subject, String text){
+    SimpleMailMessage email = new SimpleMailMessage();
+    email.setTo(mailAddressAdmin);
+    email.setSubject(subject);
+    email.setText(text);
+    email.setFrom(mailAddressFrom);
+    mailSender.send(email);
+  }
+
 }

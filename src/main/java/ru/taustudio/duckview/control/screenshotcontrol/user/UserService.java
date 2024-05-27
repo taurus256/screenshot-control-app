@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,8 @@ public class UserService {
 	EurekaClient eurekaClient;
 	Pattern pattern = Pattern.compile("[A-Za-z._0-9\\-]*@[A-Za-z._0-9\\-]*");
 
-	String CURRENT_APP_URL = "http://darkview.ru:8081";
+	@Value("${self.url}")
+	String CURRENT_APP_URL;
 
 	public void createUser(ScUser user) throws UserValidationException {
 		if (StringUtils.isEmpty(user.getName())){
