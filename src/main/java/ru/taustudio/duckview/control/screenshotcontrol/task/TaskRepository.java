@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<ScTask, Long> {
 	List<ScTask> findAllByUser(ScUser user);
+	@EntityGraph(attributePaths = {"jobList"})
 	ScTask getScTaskByUuid(String uuid);
 	@EntityGraph(attributePaths = { "jobList" })
 	List<ScTask> findByCreateTimeLessThan(Instant time);
