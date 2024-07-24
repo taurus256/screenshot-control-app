@@ -3,6 +3,7 @@ package ru.taustudio.duckview.control.screenshotcontrol.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -54,5 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		auth.inMemoryAuthentication()
 //				.withUser( "admin" ).password( "{bcrypt}$2a$12$4NgTAMMvuxBzPjZS4sdlH.iJyA4Hc2s0oW0icM7ZbhWn/zUlvaqgC" ).roles( "ADMIN" );
 		auth.userDetailsService(service);
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+		return http.getSharedObject(AuthenticationManagerBuilder.class)
+				.build();
 	}
 }

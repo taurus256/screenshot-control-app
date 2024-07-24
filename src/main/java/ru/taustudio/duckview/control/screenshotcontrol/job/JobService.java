@@ -86,6 +86,9 @@ public class JobService {
 		if (task.getMacFirefox()){
 			createJob(RENDERER.FIREFOX, OS.MACOS, task.getUrl(), task);
 		}
+		if (task.getMacChrome()){
+			createJob(RENDERER.CHROME, OS.MACOS, task.getUrl(), task);
+		}
 	}
 
 	public void createJob(RENDERER renderer, OS operationSystem, String url, ScTask task) {

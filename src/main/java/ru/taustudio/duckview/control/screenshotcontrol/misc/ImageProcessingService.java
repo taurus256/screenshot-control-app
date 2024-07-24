@@ -30,6 +30,8 @@ import pazone.ashot.cropper.ImageCropper;
 
 @Service
 public class ImageProcessingService {
+
+  public static final int DIFF_SIZE_TRIGGER = 1;
   ImageCropper cropper = new DefaultCropper();
 
   public void generatePreview(String jobUUID, ByteArrayResource resource)  {
@@ -51,7 +53,8 @@ public class ImageProcessingService {
       BufferedImage sampleImage = readImage(sampleUUID);
       for (String instanceUuid: instances){
         ImageDiffer imageDiffer = new ImageDiffer();
-        ImageDiff diff = imageDiffer.makeDiff(sampleImage, readImage(instanceUuid));
+        ImageDiff diff = imageDiffer.makeDiff(sampleImage, readImage(instanceUuid)).withDiffSizeTrigger(
+            DIFF_SIZE_TRIGGER);
         writeImage(instanceUuid + ".diff", diff.getTransparentMarkedImage());
         BufferedImage resized = Scalr.resize(diff.getTransparentMarkedImage(),300, Scalr.OP_ANTIALIAS);
         if (resized.getWidth()>100){
