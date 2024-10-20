@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -56,7 +55,7 @@ public class MonitoringService {
         task.getUrl(), job.getRenderer().toString(), selfUrl + "/task/" + task.getUuid());
   }
 
-  @Scheduled(fixedDelay = 1800000, initialDelay = 30000)
+  @Scheduled(fixedDelay = 3600000, initialDelay = 30000)
   public void selfTest(){
     try {
       ScTask task = createTestTask();
@@ -94,10 +93,14 @@ public class MonitoringService {
     task.setResolution(Resolution._1024);
     task.setWinChrome(true);
     task.setWinFirefox(true);
-    task.setWinOpera(true);
+//    task.setWinOpera(true);
     task.setWinEdge(true);
     task.setLinFirefox(true);
-    task.setLinOpera(true);
+//    task.setLinOpera(true);
+    task.setMacChrome(true);
+    task.setMacSafari(true);
+    task.setMacFirefox(true);
+    task.setIosIPHONE_PRO(true);
     setTestUser();
     taskService.createTask(task);
     return task;
