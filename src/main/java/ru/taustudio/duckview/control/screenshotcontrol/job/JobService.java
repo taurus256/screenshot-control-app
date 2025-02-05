@@ -140,7 +140,10 @@ public class JobService {
 		return Files.readAllBytes(f.toPath());
 	}
 
-	public void saveDataFromAgent(String jobUUID, ByteArrayResource resource) throws IOException{
+	public void saveDataFromAgent(String jobUUID, ByteArrayResource resource) throws IOException, JobNotFoundException{
+		if (jobRepository.getScJobByUuid(jobUUID) == null){
+			throw new JobNotFoundException();
+		}
 		FileUtilMethods.writeImage(jobUUID, resource.getByteArray());
 		imageProcessingService.generatePreview(jobUUID, resource);
 		setJobStatusByUUID(jobUUID, JobStatus.SUCCESS);
