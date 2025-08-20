@@ -149,14 +149,20 @@ public class JobService {
 		setJobStatusByUUID(jobUUID, JobStatus.SUCCESS);
 	}
 
-	public void setJobStatusByUUID(String jobUUID, JobStatus status) {
+	public void setJobStatusByUUID(String jobUUID, JobStatus status) throws JobNotFoundException {
 		ScJob job = jobRepository.getScJobByUuid(jobUUID);
+		if (job == null){
+			throw new JobNotFoundException();
+		}
 		job.setStatus(status);
 		jobRepository.save(job);
 	}
 
-	public void setJobStatusByUUID(String jobUUID, JobStatus status, String description) {
+	public void setJobStatusByUUID(String jobUUID, JobStatus status, String description) throws JobNotFoundException {
 		ScJob job = jobRepository.getScJobByUuid(jobUUID);
+		if (job == null){
+			throw new JobNotFoundException();
+		}
 		job.setStatus(status);
 		if (description != null && description.length() > 256){
 			description = description.substring(0,255);

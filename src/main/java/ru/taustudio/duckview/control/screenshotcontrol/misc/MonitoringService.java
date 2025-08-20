@@ -24,7 +24,7 @@ import org.springframework.security.core.Authentication;
 @Service
 @Slf4j
 public class MonitoringService {
-
+ //TODO: что-то с этим сделать
   private static final String TEST_USER_NAME = "test_user";
 
   private static final String TEST_USER_PASS = "qeJnNP%YXFy$ZUv";

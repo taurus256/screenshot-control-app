@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ import ru.taustudio.duckview.control.screenshotcontrol.entity.ScJob;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScTask;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.enumeration.JobStatus;
+import ru.taustudio.duckview.control.screenshotcontrol.job.JobNotFoundException;
 import ru.taustudio.duckview.control.screenshotcontrol.job.JobService;
 
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.UUID;
 import ru.taustudio.duckview.control.screenshotcontrol.misc.ImageProcessingService;
 
 @Service
+@Slf4j
 public class TaskService {
 
   @Autowired
@@ -86,10 +90,14 @@ public class TaskService {
     System.out.println("instances = " + instanceUUIDs);
     Set<String> previewReadySet = imageProcessingService.generateDiffs(sampleUUID, instanceUUIDs);
     instanceUUIDs.forEach(instanceUUID -> {
-      if (previewReadySet.contains(instanceUUID)) {
-        jobService.setJobStatusByUUID(instanceUUID, JobStatus.PREVIEW_IS_READY);
-      } else {
-        jobService.setJobStatusByUUID(instanceUUID, JobStatus.ERROR);
+      try {
+        if (previewReadySet.contains(instanceUUID)) {
+          jobService.setJobStatusByUUID(instanceUUID, JobStatus.PREVIEW_IS_READY);
+        } else {
+          jobService.setJobStatusByUUID(instanceUUID, JobStatus.ERROR);
+        }
+      } catch (JobNotFoundException ex){
+        log.error("Job {} cannot be found!", instanceUUID);
       }
     });
   }

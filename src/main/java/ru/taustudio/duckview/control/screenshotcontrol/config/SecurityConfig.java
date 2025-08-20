@@ -10,11 +10,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import ru.taustudio.duckview.control.screenshotcontrol.entity.ScUser;
 import ru.taustudio.duckview.control.screenshotcontrol.user.AuthenticationHandler;
 import ru.taustudio.duckview.control.screenshotcontrol.user.UserDetailsService;
@@ -31,13 +28,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests().antMatchers("/home").authenticated()
 				.and()
+				.rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret"))
+				.logout().logoutSuccessUrl("/").deleteCookies("JSESSIONID")
+				.and()
 				.formLogin().loginPage("/login")
 				.loginProcessingUrl("/app_login")
 				.usernameParameter("login")
 				.passwordParameter("password")
 				.failureHandler(new AuthenticationHandler())
 				.defaultSuccessUrl("/start")
-				.and().logout().logoutSuccessUrl("/")
 				.and().anonymous().principal(new ScUser())
 				.and()
 				.csrf().disable();

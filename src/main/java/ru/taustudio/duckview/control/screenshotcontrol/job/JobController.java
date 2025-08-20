@@ -4,6 +4,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -18,13 +19,13 @@ public class JobController {
 
 	/**This method called from agents*/
 	@PutMapping("/{jobUUID}")
-	public void updateJob(@PathVariable String jobUUID, @RequestBody ByteArrayResource bars) throws IOException {
-		jobService.saveDataFromAgent(jobUUID, bars);
+	public void updateJob(@PathVariable String jobUUID, @RequestBody ByteArrayResource bars) throws IOException, JobNotFoundException {
+			jobService.saveDataFromAgent(jobUUID, bars);
 	}
 
 	@PutMapping("/{jobUUID}/status/{jobStatus}")
 	public void switchJobStatus(@PathVariable String jobUUID, @PathVariable JobStatus jobStatus, @RequestBody(required = false)
-			Map<String,String> descriptionObject) throws IOException {
+			Map<String,String> descriptionObject) throws IOException, JobNotFoundException {
 		if (descriptionObject == null) {
 			jobService.setJobStatusByUUID(jobUUID, jobStatus);
 		} else {
